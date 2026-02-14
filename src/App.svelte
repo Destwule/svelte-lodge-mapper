@@ -13,10 +13,6 @@
     <button onclick={() => mapComponent.recordLodge()}>
       Record Current Lodge
     </button>
-
-    <button onclick={() => mapComponent.getCurrentLocation()}>
-      Get Current Location
-    </button>
   </div>
 
   <Map bind:this={mapComponent} lat={lafia_latitude} lon={lafia_longitude} />

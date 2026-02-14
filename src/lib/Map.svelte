@@ -25,7 +25,8 @@
         })
     });
 
-    export function getCurrentLocation() {
+    export function recordLodge() {
+        const lodgeName = prompt("What is the name of the lodge") || "Nameless Lodge"
     	navigator.geolocation.getCurrentPosition((position) => {
 			const { latitude, longitude } = position.coords;
 
@@ -34,7 +35,7 @@
 
 			L.marker([latitude, longitude])
 			.addTo(map)
-			.bindPopup("You are here")
+			.bindPopup(lodgeName)
 		})
     }
 </script>
