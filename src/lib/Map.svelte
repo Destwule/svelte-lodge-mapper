@@ -48,8 +48,21 @@
         localStorage.setItem(LOCATIONS_KEY, JSON.stringify(locations));
     }
 
-    const remove_location = (ID: string) => {
-        locations = locations.filter((location) => location.id !== ID)
+    
+    // Do something here
+    const edit_location_name = (location_object: Location, newLocationName: string) => {
+        locations.forEach((loc_obj) => {
+            if (loc_obj.id === location_object.id) {
+                loc_obj.location_name = newLocationName;
+            }
+        })
+        save_location_list()
+    }
+
+
+
+    const remove_location = (location_object: Location) => {
+        locations = locations.filter((location) => location_object.id !== location.id)
 
         save_location_list()
     }
@@ -63,26 +76,33 @@
             attribution: '&copy; OpenStreetMap'
         }).addTo(map);
 
-        navigator.geolocation.getCurrentPosition((position) => {
-            const myLat = position.coords.latitude;
-            const myLon = position.coords.longitude;
+        if (locations.length > 0) {
+            locations.forEach(loc_obj => {
+                const newMarker = L.marker([loc_obj.lat, loc_obj.lon]).addTo(map)
+                addMarkerPopup(newMarker, loc_obj)
+            })
+        }
+        else {
+            navigator.geolocation.getCurrentPosition((position) => {
+                const myLat = position.coords.latitude;
+                const myLon = position.coords.longitude;
 
-            map.flyTo([myLat, myLon], 18)
+                map.flyTo([myLat, myLon], 18)
 
-            const marker = L.marker([myLat, myLon]).addTo(map)
-            const markerText = "Current Location"
+                const marker = L.marker([myLat, myLon]).addTo(map)
+                const markerText = "You are Here"
 
-            addMarkerPopup(marker, markerText)
-            
-            const newLocation = make_location_object(myLat, myLon, markerText)
-            save_location(newLocation)
-        })
+                const newLocation = make_location_object(myLat, myLon, markerText)
+                addMarkerPopup(marker, newLocation)
+                save_location(newLocation)
+            })
+        }
     });
 
 
-    const addMarkerPopup = (newMarker: L.Marker, location_name: string) => {
+    const addMarkerPopup = (newMarker: L.Marker, location_object: Location) => {
         // 1. Store the name in a local variable so we can change it
-        let currentName = location_name;
+        let currentName = location_object.location_name;
 
         // 2. Create a function that builds the popup content
         const renderPopup = () => {
@@ -102,6 +122,8 @@
                 const newName = prompt("Edit Lodge Name:", currentName);
                 if (newName !== null && newName.trim() !== "") {
                     currentName = newName;
+
+                    edit_location_name(location_object, currentName)
                     renderPopup(); // Re-run this function to update the UI
                 }
             };
@@ -110,6 +132,8 @@
             container.querySelector("#delete-btn").onclick = () => {
                 if (confirm("Delete this marker?")) {
                     newMarker.remove();
+
+                    remove_location(location_object)
                 }
             };
 
@@ -122,8 +146,8 @@
     }
 
 
-    export function recordLodge() {
-        const lodgeName = prompt("What is the name of the lodge") || "Nameless Lodge"
+    export function recordLocation() {
+        const locationName = prompt("What is the name of the lodge") || "Nameless Lodge"
     	navigator.geolocation.getCurrentPosition((position) => {
 			const { latitude, longitude } = position.coords;
 
@@ -134,7 +158,8 @@
                 draggable: true,
             }).addTo(map)
             
-            addMarkerPopup(marker, lodgeName)
+            const newLocation = make_location_object(latitude, longitude, locationName)
+            addMarkerPopup(marker, newLocation)
 		})
     }
 </script>
