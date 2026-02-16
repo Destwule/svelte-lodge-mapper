@@ -18,3 +18,28 @@ html, body {
 body {
   background: var(--BG-COLOR-BODY);
 }
+
+button {
+  cursor: pointer;
+  padding: 5px;
+}
+
+.deleteBtn {
+  background: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.editBtn {
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.nameDisplay {
+  font-size: 1.1rem;
+  display: block;
+  margin-bottom: 8px;
+}
