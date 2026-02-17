@@ -10,7 +10,7 @@
   <h1>Lodge Mapper</h1>
 
   <div class="controls">
-    <button onclick={() => mapComponent.recordLodge()}>
+    <button onclick={() => mapComponent.recordCurrentLocation()}>
       Record Current Lodge
     </button>
   </div>
